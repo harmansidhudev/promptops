@@ -51,4 +51,14 @@ The full improved prompt text, ready to copy and use.
 
 ## After responding
 
-Save the improved prompt to `.promptops/improved/improved-<timestamp>.md`. Create the directory if needed. Save ONLY the prompt text — no metadata.
+Save the improved prompt to `.promptops/improved/improved-<timestamp>.md`. Create the directory if needed. Save the prompt text, and at the top include a YAML frontmatter block with the before/after scores and original prompt file reference:
+
+```
+---
+before_score: X.X
+after_score: X.X
+source_eval: eval-<timestamp>.md (if applicable)
+---
+```
+
+This lets other commands (`/regression`, `/run`, `/test`) find and use this file across sessions.

@@ -16,7 +16,11 @@ If $ARGUMENTS is empty, reply: "Type your prompt after the command: `/compare Yo
 Claude Opus 4.6, Claude Sonnet 4.6, Claude Haiku 4.5, GPT-4o, GPT-4o-mini.
 Mark non-Anthropic estimates with *(est.)*.
 
-## Current API pricing (as of March 2026)
+## Pricing
+
+First, check if `.promptops/config.json` exists. If it does, read the `pricing` object for model prices. If it doesn't exist, use these defaults:
+
+### Default API pricing (as of March 2026)
 
 | Model | Input (per 1M tokens) | Output (per 1M tokens) |
 |---|---|---|
@@ -25,6 +29,8 @@ Mark non-Anthropic estimates with *(est.)*.
 | Claude Haiku 4.5 | $1.00 | $5.00 |
 | GPT-4o *(est.)* | $2.50 | $10.00 |
 | GPT-4o-mini *(est.)* | $0.15 | $0.60 |
+
+If using defaults, add a note at the bottom: *"Using default pricing. Create `.promptops/config.json` to set custom rates."*
 
 ## Cost calculation
 

@@ -12,10 +12,11 @@ Execute the best prompt version from this session. Deliver real output — this 
 ## Finding the prompt
 
 1. **Check conversation history** for improved prompts from /improve — use the latest one
-2. If multiple improved versions exist, list them and ask which to run
-3. If no improved version, use the original from /evaluate
-4. If nothing found and $ARGUMENTS has content, execute $ARGUMENTS directly as a prompt
-5. If nothing found and $ARGUMENTS is empty, reply: "No prompt found. Run `/improve` first, or type `/run Your prompt here`"
+2. **If not in conversation history** — read `.promptops/improved/` directory and use the most recently modified file
+3. If multiple improved versions exist (in conversation or on disk), list them and ask which to run
+4. If no improved version anywhere, check `.promptops/evals/` for the latest eval and use the prompt from its `## Prompt` section
+5. If nothing found and $ARGUMENTS has content, execute $ARGUMENTS directly as a prompt
+6. If nothing found and $ARGUMENTS is empty, reply: "No prompt found. Run `/improve` first, or type `/run Your prompt here`"
 
 ## Executing
 

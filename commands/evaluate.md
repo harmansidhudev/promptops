@@ -52,6 +52,14 @@ Use markdown headers, a table, numbered list with bold tags, and blockquotes. Do
 
 *Score below 4.0? Run `/improve` to get a rewritten version.*
 
+## History awareness
+
+Before scoring, check `.promptops/evals/` for previous evaluation files. If a prior eval exists for a similar prompt (same intent/topic), add one line after the score table:
+
+*Previous score: X.X/5.0 (eval-<timestamp>.md)*
+
+This helps users track improvement over time.
+
 ## After responding
 
-Save the evaluation to `.promptops/evals/eval-<timestamp>.md`. Create the directory if needed.
+Save the evaluation to `.promptops/evals/eval-<timestamp>.md`. Create the directory if needed. Include the full prompt text at the end of the saved file under a `## Prompt` heading so other commands can read it back.

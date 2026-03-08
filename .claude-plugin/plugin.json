@@ -1,7 +1,7 @@
 {
   "name": "promptops",
-  "version": "0.4.0",
-  "description": "Evaluate, improve, and run your prompts — all in one session.",
+  "version": "0.5.0",
+  "description": "Evaluate, improve, test, and run your prompts — all in one session.",
   "author": {
     "name": "Harman Sidhu",
     "email": "harman@harmansidhudev.com",
