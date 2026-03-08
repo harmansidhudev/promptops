@@ -73,6 +73,20 @@ Copy `config.example.json` to `.promptops/config.json` and update rates. The `/c
 
 **Terminal:** `claude --plugin-dir /path/to/promptops`
 
+### Install Scopes
+
+| | Session | Project | Global |
+|---|---|---|---|
+| **How** | `claude --plugin-dir /path/to/promptops` | `/plugin install promptops --scope project` | `/plugin install promptops` |
+| **Persists** | Only while session is open | Committed to repo (`.claude/plugins`) | Stored in `~/.claude/plugins` |
+| **Available where** | That one session | That repo only | Every project |
+| **Shared with team** | No | Yes — checked into git | No — local to your machine |
+| **Auto-loads** | No — must pass flag each time | Yes — every time you open the repo | Yes — always |
+| **Live-updates from source** | Yes — reads files directly | No — reinstall to update | No — reinstall to update |
+| **Best for** | Dev/testing the plugin | Team workflows on a shared repo | Personal tooling you want everywhere |
+
+> **Tip:** Use `--plugin-dir` during development for live changes. Once the plugin is published on the Claude marketplace, install it directly with `/plugin install` for automatic updates.
+
 ## Author
 
 **Harman Sidhu** — [harmansidhudev.com](https://harmansidhudev.com)
