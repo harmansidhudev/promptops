@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptOps — Evaluate, Improve, and Run Your Prompts</title>
+  <meta name="description" content="Claude Code plugin for prompt evaluation, improvement, regression testing, and model cost comparison. Open source.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --surface: #141416;
+      --border: #1e1e22;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --accent: #f97316;
+      --accent-dim: #f9731620;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: clamp(42px, 6vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+    }
+
+    .install-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .install-box:hover { border-color: var(--accent); }
+
+    .install-box .prompt { color: var(--accent); }
+    .install-box .copy {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .install-box:hover .copy { color: var(--accent); border-color: var(--accent); }
+
+    /* The Loop */
+    .loop {
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    .loop-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .loop-step {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .loop-step:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .loop-arrow { color: var(--muted); font-size: 18px; }
+
+    /* Commands */
+    .commands { padding: 60px 0; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    .command-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .command-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+
+    .command-card:hover { border-color: var(--accent); }
+
+    .command-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .command-desc {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Demo */
+    .demo { padding: 60px 0; }
+
+    .terminal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.r { background: var(--red); }
+    .terminal-dot.y { background: var(--yellow); }
+    .terminal-dot.g { background: var(--green); }
+
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+
+    .terminal-body {
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .t-prompt { color: var(--accent); }
+    .t-cmd { color: var(--text); }
+    .t-output { color: var(--muted); }
+    .t-score { color: var(--yellow); font-weight: 600; }
+    .t-good { color: var(--green); }
+    .t-label { color: var(--blue); }
+
+    /* Skills */
+    .skills { padding: 60px 0; }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .skill-card:hover { border-color: var(--accent); }
+
+    .skill-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .skill-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .skill-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      border: 1px solid #22c55e40;
+      border-radius: 100px;
+      padding: 3px 10px;
+      margin-bottom: 12px;
+    }
+
+    /* CTA */
+    .cta {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    .cta h2 { margin-bottom: 16px; }
+
+    .cta p {
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+
+    .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .command-card { grid-template-columns: 1fr; }
+      .skill-row { grid-template-columns: 1fr; }
+      .hero { padding: 60px 0 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <section class="hero">
+    <div class="badge">Claude Code Plugin</div>
+    <h1>Prompt<span>Ops</span></h1>
+    <p class="subtitle">Evaluate, improve, and run your prompts — all in one session. No setup required.</p>
+    <div class="install-box" onclick="navigator.clipboard.writeText('gh repo clone harmansidhudev/promptops')">
+      <span><span class="prompt">$</span> gh repo clone harmansidhudev/promptops</span>
+      <span class="copy">copy</span>
+    </div>
+  </section>
+
+  <section class="loop">
+    <div class="section-label">The Loop</div>
+    <h2>Four commands. One session.</h2>
+    <div class="loop-flow">
+      <div class="loop-step">/evaluate</div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-step">/improve</div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-step">/regression</div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-step">/run</div>
+    </div>
+  </section>
+
+  <section class="commands">
+    <div class="section-label">Commands</div>
+    <h2>What you get</h2>
+    <div class="command-grid">
+      <div class="command-card">
+        <div class="command-name">/evaluate</div>
+        <div class="command-desc">Score any prompt 1–5 across five dimensions. See the top 3 issues with copy-paste fixes.</div>
+      </div>
+      <div class="command-card">
+        <div class="command-name">/improve</div>
+        <div class="command-desc">Paste a rough prompt, get a polished version with schemas, guardrails, and zero filler.</div>
+      </div>
+      <div class="command-card">
+        <div class="command-name">/regression</div>
+        <div class="command-desc">Compare old vs new. See what improved, what regressed, and whether it's safe to ship.</div>
+      </div>
+      <div class="command-card">
+        <div class="command-name">/compare</div>
+        <div class="command-desc">Benchmark across Opus, Sonnet, Haiku, GPT-4o. Per-run cost, daily cost, routing rules.</div>
+      </div>
+      <div class="command-card">
+        <div class="command-name">/run</div>
+        <div class="command-desc">Execute the winning prompt for real. Delivers actual output, not another evaluation.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo">
+    <div class="section-label">In Action</div>
+    <h2>See the loop</h2>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot r"></div>
+        <div class="terminal-dot y"></div>
+        <div class="terminal-dot g"></div>
+        <span class="terminal-title">Claude Code — promptops</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">&gt;</span> <span class="t-cmd">/evaluate You are a code reviewer. Find bugs.</span></div>
+        <br>
+        <div><span class="t-label">Prompt Evaluation</span> — <span class="t-score">1.8/5.0</span></div>
+        <div><span class="t-output">Structure 2/5 · Specificity 2/5 · Output Control 1/5</span></div>
+        <div><span class="t-output">Error Prevention 1/5 · Testability 2/5</span></div>
+        <br>
+        <div><span class="t-output">1. [Output Control] No format specified. Fix: add JSON schema</span></div>
+        <div><span class="t-output">2. [Error Prevention] No guardrails. Fix: add "Do NOT" patterns</span></div>
+        <div><span class="t-output">3. [Specificity] Too vague. Fix: add role framing + constraints</span></div>
+        <br>
+        <div><span class="t-prompt">&gt;</span> <span class="t-cmd">/improve You are a code reviewer. Find bugs.</span></div>
+        <br>
+        <div><span class="t-label">Improved Prompt</span> — <span class="t-good">1.8 → 4.2</span></div>
+        <div><span class="t-output">+Structure · +Output Control · +Error Prevention · −Filler</span></div>
+        <br>
+        <div><span class="t-prompt">&gt;</span> <span class="t-cmd">/run</span></div>
+        <div><span class="t-output">Running the improved prompt now...</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills">
+    <div class="section-label">Auto-Invoked</div>
+    <h2>Skills that work in the background</h2>
+    <div class="skill-row">
+      <div class="skill-card">
+        <div class="skill-tag">auto-invoked</div>
+        <h3>Prompt Quality Check</h3>
+        <p>Spots weak prompts while you write them. One-line fix when it matters. Silent when your prompt is solid.</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-tag">auto-invoked</div>
+        <h3>Golden Dataset Builder</h3>
+        <p>Saves approved outputs as test cases. Builds evaluation data over time with zero extra effort.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Try it now</h2>
+    <p>Open source. No setup. Works in Claude Code terminal and Mac app.</p>
+    <div class="btn-row">
+      <a href="https://github.com/harmansidhudev/promptops" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://github.com/harmansidhudev/promptops#installation" class="btn btn-ghost">
+        Installation Guide
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="container">
+    <p>Built by <a href="https://harmansidhudev.com">Harman Sidhu</a> · MIT License</p>
+  </div>
+</footer>
+
+</body>
+</html>
