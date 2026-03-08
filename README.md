@@ -64,6 +64,11 @@ Copy `config.example.json` to `.promptops/config.json` and update rates. The `/c
 
 ## Installation
 
+**Claude Code (recommended):**
+```
+/plugin install promptops@harmansidhudev/promptops
+```
+
 **Mac app:** Plugins → Add plugin → Upload plugin → select this folder
 
 **Terminal:** `claude --plugin-dir /path/to/promptops`

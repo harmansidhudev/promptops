@@ -284,6 +284,70 @@
       margin-bottom: 12px;
     }
 
+    /* Install */
+    .install { padding: 60px 0; }
+
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .install-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .install-card:hover { border-color: var(--accent); }
+
+    .install-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .install-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .install-card code {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .install-card code .prompt { color: var(--accent); }
+
+    .install-label {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--green);
+      border: 1px solid #22c55e40;
+      border-radius: 100px;
+      padding: 3px 10px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .install-grid { grid-template-columns: 1fr; }
+    }
+
     /* CTA */
     .cta {
       padding: 80px 0;
@@ -356,22 +420,24 @@
   <section class="hero">
     <div class="badge">Claude Code Plugin</div>
     <h1>Prompt<span>Ops</span></h1>
-    <p class="subtitle">Evaluate, improve, and run your prompts — all in one session. No setup required.</p>
-    <div class="install-box" onclick="navigator.clipboard.writeText('gh repo clone harmansidhudev/promptops')">
-      <span><span class="prompt">$</span> gh repo clone harmansidhudev/promptops</span>
+    <p class="subtitle">Evaluate, improve, test, and run your prompts — all in one session. No setup required.</p>
+    <div class="install-box" onclick="navigator.clipboard.writeText('/plugin install promptops@harmansidhudev/promptops')">
+      <span><span class="prompt">/</span> plugin install promptops@harmansidhudev/promptops</span>
       <span class="copy">copy</span>
     </div>
   </section>
 
   <section class="loop">
     <div class="section-label">The Loop</div>
-    <h2>Four commands. One session.</h2>
+    <h2>Five commands. One session.</h2>
     <div class="loop-flow">
       <div class="loop-step">/evaluate</div>
       <span class="loop-arrow">→</span>
       <div class="loop-step">/improve</div>
       <span class="loop-arrow">→</span>
       <div class="loop-step">/regression</div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-step">/test</div>
       <span class="loop-arrow">→</span>
       <div class="loop-step">/run</div>
     </div>
@@ -383,7 +449,7 @@
     <div class="command-grid">
       <div class="command-card">
         <div class="command-name">/evaluate</div>
-        <div class="command-desc">Score any prompt 1–5 across five dimensions. See the top 3 issues with copy-paste fixes.</div>
+        <div class="command-desc">Score any prompt 1–5 across five dimensions. See the top 3 issues with copy-paste fixes. Shows previous score if one exists.</div>
       </div>
       <div class="command-card">
         <div class="command-name">/improve</div>
@@ -391,15 +457,19 @@
       </div>
       <div class="command-card">
         <div class="command-name">/regression</div>
-        <div class="command-desc">Compare old vs new. See what improved, what regressed, and whether it's safe to ship.</div>
+        <div class="command-desc">Compare old vs new. See what improved, what regressed, and whether it's safe to ship. Validates against your golden dataset.</div>
+      </div>
+      <div class="command-card">
+        <div class="command-name">/test</div>
+        <div class="command-desc">Run your prompt against every golden test case. See pass/fail results, failure patterns, and suggested fixes.</div>
       </div>
       <div class="command-card">
         <div class="command-name">/compare</div>
-        <div class="command-desc">Benchmark across Opus, Sonnet, Haiku, GPT-4o. Per-run cost, daily cost, routing rules.</div>
+        <div class="command-desc">Benchmark across Opus, Sonnet, Haiku, GPT-4o. Per-run cost, daily cost, routing rules. Supports custom pricing via config.</div>
       </div>
       <div class="command-card">
         <div class="command-name">/run</div>
-        <div class="command-desc">Execute the winning prompt for real. Delivers actual output, not another evaluation.</div>
+        <div class="command-desc">Execute the winning prompt for real. Delivers actual output, not another evaluation. Works across sessions.</div>
       </div>
     </div>
   </section>
@@ -453,6 +523,29 @@
     </div>
   </section>
 
+  <section class="install">
+    <div class="section-label">Installation</div>
+    <h2>Get started in seconds</h2>
+    <div class="install-grid">
+      <div class="install-card">
+        <div class="install-label">recommended</div>
+        <h3>Claude Code</h3>
+        <p>One command. Done.</p>
+        <code><span class="prompt">/</span> plugin install promptops@harmansidhudev/promptops</code>
+      </div>
+      <div class="install-card">
+        <h3>Mac App</h3>
+        <p>Clone the repo, then load it as a plugin.</p>
+        <code>Plugins → Add plugin → Upload plugin → select folder</code>
+      </div>
+      <div class="install-card">
+        <h3>Terminal</h3>
+        <p>Point Claude to the plugin directory.</p>
+        <code><span class="prompt">$</span> claude --plugin-dir ~/path/to/promptops</code>
+      </div>
+    </div>
+  </section>
+
   <section class="cta">
     <h2>Try it now</h2>
     <p>Open source. No setup. Works in Claude Code terminal and Mac app.</p>
@@ -470,7 +563,7 @@
 
 <footer>
   <div class="container">
-    <p>Built by <a href="https://harmansidhudev.com">Harman Sidhu</a> · MIT License</p>
+    <p>Built by <a href="https://harmansidhudev.com">Harman Sidhu</a> · <a href="privacy.html">Privacy</a> · <a href="https://github.com/harmansidhudev/promptops">GitHub</a> · MIT License</p>
   </div>
 </footer>
 
