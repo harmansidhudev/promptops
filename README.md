@@ -27,7 +27,7 @@ Score it. Improve it. Verify nothing broke. Test against real cases. Run it.
 
 **`/evaluate`** — Honest 1-5 score across 5 dimensions (structure, specificity, output control, error prevention, testability). Top 3 issues with copy-paste fixes. Shows previous score if one exists.
 
-**`/improve`** — Rewrites your prompt with schemas, guardrails, and no filler. Shows before/after score and what changed.
+**`/improve`** — Rewrites your prompt with schemas, guardrails, and no filler. Shows before/after score and what changed. If the result is complex (1500+ tokens, 3+ objectives), suggests splitting into phases.
 
 **`/regression`** — Side-by-side comparison of old vs new. Flags what improved (✅), what's risky (⚠️), and what regressed (🔴). Runs both versions against your golden dataset for empirical validation.
 
@@ -61,6 +61,7 @@ Copy `config.example.json` to `.promptops/config.json` and update rates. The `/c
 
 - **prompt-quality-check** — One-line fix while you edit prompts. Silent when solid.
 - **golden-dataset-builder** — Saves approved outputs as test cases over time.
+- **prompt-complexity-check** — Detects when an improved prompt is too complex for a single pass. Suggests splitting into sequential phases to improve accuracy and reduce cost. Fires after `/improve`, silent when the prompt is fine.
 
 ## Installation
 
