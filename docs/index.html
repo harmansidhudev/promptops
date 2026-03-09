@@ -247,7 +247,7 @@
 
     .skill-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
     }
 
@@ -407,9 +407,12 @@
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
+    @media (max-width: 768px) {
+      .skill-row { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 640px) {
       .command-card { grid-template-columns: 1fr; }
-      .skill-row { grid-template-columns: 1fr; }
       .hero { padding: 60px 0 40px; }
     }
   </style>
@@ -453,7 +456,7 @@
       </div>
       <div class="command-card">
         <div class="command-name">/improve</div>
-        <div class="command-desc">Paste a rough prompt, get a polished version with schemas, guardrails, and zero filler.</div>
+        <div class="command-desc">Paste a rough prompt, get a polished version with schemas, guardrails, and zero filler. Auto-suggests splitting into phases when the result is too complex.</div>
       </div>
       <div class="command-card">
         <div class="command-name">/regression</div>
@@ -519,6 +522,11 @@
         <div class="skill-tag">auto-invoked</div>
         <h3>Golden Dataset Builder</h3>
         <p>Saves approved outputs as test cases. Builds evaluation data over time with zero extra effort.</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-tag">auto-invoked</div>
+        <h3>Prompt Complexity Check</h3>
+        <p>Detects when an improved prompt is too complex for a single pass. Suggests splitting into phases to improve accuracy and reduce cost.</p>
       </div>
     </div>
   </section>
